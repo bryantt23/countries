@@ -15,6 +15,26 @@ function App() {
       });
   }, []);
 
+  const showCountry = country => {
+    const { languages } = country;
+    const result = (
+      <div>
+        <h1>{country.name}</h1>
+        <p>capital: {country.capital}</p>
+        <p>population: {country.population}</p>
+
+        <h3>languages</h3>
+        <ul>
+          {languages.map(language => (
+            <li>{language.name}</li>
+          ))}
+        </ul>
+        <img height={100} src={country.flag} />
+      </div>
+    );
+    setSearchResult(result);
+  };
+
   useEffect(() => {
     const filteredCountries = countries.filter(country =>
       country.name.toLowerCase().includes(searchInput.toLowerCase())
@@ -24,28 +44,14 @@ function App() {
       setSearchResult('Too many matches, specify another filter');
     } else if (filteredCountries.length > 1) {
       const searchResult = filteredCountries.map(country => (
-        <p>{country.name}</p>
+        <p>
+          {country.name} <button>Show</button>
+        </p>
       ));
       setSearchResult(searchResult);
     } else if (filteredCountries.length === 1) {
       const country = filteredCountries[0];
-      const { languages } = country;
-      const result = (
-        <div>
-          <h1>{country.name}</h1>
-          <p>capital: {country.capital}</p>
-          <p>population: {country.population}</p>
-
-          <h3>languages</h3>
-          <ul>
-            {languages.map(language => (
-              <li>{language.name}</li>
-            ))}
-          </ul>
-          <img height={100} src={country.flag} />
-        </div>
-      );
-      setSearchResult(result);
+      showCountry(country);
     } else if (filteredCountries.length === 0) {
       //zero results
       setSearchResult('No country found');

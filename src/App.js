@@ -45,7 +45,14 @@ function App() {
     } else if (filteredCountries.length > 1) {
       const searchResult = filteredCountries.map(country => (
         <p>
-          {country.name} <button>Show</button>
+          {country.name}{' '}
+          <button
+            onClick={() => {
+              showCountry(country);
+            }}
+          >
+            Show
+          </button>
         </p>
       ));
       setSearchResult(searchResult);

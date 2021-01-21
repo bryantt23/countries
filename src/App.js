@@ -20,10 +20,12 @@ function App() {
       country.name.toLowerCase().includes(searchInput.toLowerCase())
     );
     console.log(filteredCountries);
-    if (filteredCountries.length > 10) {
+    if (filteredCountries.length >= 10) {
       setSearchResult('Too many matches, specify another filter');
     } else if (filteredCountries.length > 1) {
-      const searchResult = countries.map(country => <p>{country.name}</p>);
+      const searchResult = filteredCountries.map(country => (
+        <p>{country.name}</p>
+      ));
       setSearchResult(searchResult);
     } else if (filteredCountries.length === 1) {
       const country = filteredCountries[0];
@@ -50,10 +52,6 @@ function App() {
     }
   }, [searchInput]);
 
-  // const showOutput = () => {
-  //   return countries.map(country => <p>{country.name}</p>);
-  // };
-
   return (
     <div className='App'>
       find countries{' '}
@@ -63,8 +61,6 @@ function App() {
           setSearchInput(e.target.value);
         }}
       ></input>
-      {/* {searchInput} */}
-      {/* {JSON.stringify(countries)} */}
       <br />
       {searchResult}
     </div>

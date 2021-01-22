@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+const API_WEATHER_KEY = 'cbe3a5258849eb31e096fd9bf0763eb8';
 
 function App() {
   const [searchInput, setSearchInput] = useState('');
@@ -10,13 +11,23 @@ function App() {
     fetch('https://restcountries.eu/rest/v2/all')
       .then(response => response.json())
       .then(data => {
-        console.log(data);
         setCountries(data);
       });
   }, []);
 
-  const showCountry = country => {
+  const showCountry = async country => {
     const { languages } = country;
+    // let weather;
+    const res = await getCityWeather(country.capital);
+    const weather = await displayWeather(res);
+    // .then(res => {
+    //   console.log('res in getCityWeather', res);
+    //   // weather = res;
+    //   weather = displayWeather(res);
+    //   console.log('weather from displayWeather', weather);
+    // });
+    // console.log(weatherData);
+    // const weather = displayWeather(weatherData);
     const result = (
       <div>
         <h1>{country.name}</h1>
@@ -30,10 +41,48 @@ function App() {
           ))}
         </ul>
         <img height={100} src={country.flag} />
+        <p>{weather}</p>
       </div>
     );
     setSearchResult(result);
   };
+
+  // https://github.com/bryantt23/weather-api/blob/master/script.js
+  async function getCityWeather(city) {
+    // this gets rid of undefined
+    // return Promise.resolve('hi');
+
+    city = city.split(' ').length > 1 ? city.split(' ').join('+') : city;
+
+    const url =
+      'http://api.openweathermap.org/data/2.5/weather?APPID=' +
+      API_WEATHER_KEY +
+      '&q=' +
+      city +
+      '&units=imperial ';
+
+    const res = await fetch(url);
+    const data = await res.json();
+
+    // https://www.pluralsight.com/guides/javascript-promise-typeerror:-cannot-read-then-of-undefined
+    return Promise.resolve(data);
+
+    // fetch(url).then(function (res) {
+    //   res.json().then(function (data) {
+    //     console.log('data', data);
+    //     return Promise.resolve(data);
+    //     // return displayWeather(data);
+    //   });
+    // });
+  }
+
+  function displayWeather(data) {
+    return `City: ${data.name}, Temp: ${data.main.temp}, Description: ${data.weather[0].main}`;
+    // const p = document.createElement('p');
+    // p.textContent = `City: ${data.name}, Temp: ${data.main.temp}, Description: ${data.weather[0].main}`;
+    // console.log(p);
+    // return p;
+  }
 
   useEffect(() => {
     const filteredCountries = countries.filter(country =>
